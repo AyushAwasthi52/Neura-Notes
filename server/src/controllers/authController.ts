@@ -41,7 +41,7 @@ const createSendToken: Function = (
   });
 };
 
-const login = catchAsync(
+const login: Function = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body;
 
@@ -58,7 +58,7 @@ const login = catchAsync(
   },
 );
 
-const signup = catchAsync(
+const signup: Function = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const newUser = await userModel.create({
       name: req.body.name,
