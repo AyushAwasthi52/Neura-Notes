@@ -5,3 +5,5 @@ function catchAsync(fn: Function): Function {
     fn(req, res, next).catch(next);
   };
 }
+
+export default catchAsync;
