@@ -110,5 +110,25 @@ const protect: Function = catchAsync(
           401,
         ),
       );
+    
+    res.locals.user = freshUser;
+
+    next();
   },
 );
+
+
+const isLoggedIn: Function = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  if (req.cookies.jwt) {
+    const decoded = await promisify(jwt.verify as any)(req.cookies.jwt, secretKey);
+
+    const freshUser = await userModel.findById(decoded.id);
+
+    if (!freshUser) return next();
+
+    if (freshUser.changedPasswordAfter(decoded.iat)) return next();
+
+    res.locals.user = freshUser;
+  }
+  next();
+})
