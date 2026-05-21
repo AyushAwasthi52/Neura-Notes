@@ -17,3 +17,17 @@ const deleteOne: Function = (Model: any) => {
   });
 };
 
+const updateOne: Function = (Model: any) => {
+  catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!doc) return next(new AppError("No document found by ID", 404));
+
+    res.status(204).json({
+      status: "Success",
+      data: null,
+    });
+  });
+};
