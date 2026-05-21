@@ -1,0 +1,19 @@
+import AppError from "../utils/appError.js";
+import catchAsync from "../utils/catchAsync.js";
+import { Request, Response, NextFunction } from "express";
+
+const deleteOne: Function = (Model: any) => {
+  catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const doc = await Model.findByIdAndDelete(req.params.id);
+
+    if (!doc) {
+      return next(new AppError("No document found by ID", 404));
+    }
+
+    res.status(204).json({
+      status: "Success",
+      data: null,
+    });
+  });
+};
+
