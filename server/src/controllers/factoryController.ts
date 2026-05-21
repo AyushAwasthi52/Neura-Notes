@@ -27,7 +27,18 @@ const updateOne: Function = (Model: any) => {
 
     res.status(204).json({
       status: "Success",
-      data: null,
+      data: doc,
+    });
+  });
+};
+
+const createOne: Function = (Model: any) => {
+  catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const doc = await Model.create(req.body);
+
+    res.status(204).json({
+      status: "Success",
+      data: doc,
     });
   });
 };
