@@ -53,3 +53,9 @@ const getOne: Function = (Model: any) => {
     });
   });
 };
+
+const getAll: Function = (Model: any) => {
+  catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    
+  })
+}
