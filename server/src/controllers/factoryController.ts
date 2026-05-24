@@ -42,3 +42,14 @@ const createOne: Function = (Model: any) => {
     });
   });
 };
+
+const getOne: Function = (Model: any) => {
+  catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const doc = await Model.findById(req.params.id);
+
+    res.status(204).json({
+      status: "Success",
+      data: doc,
+    });
+  });
+};
