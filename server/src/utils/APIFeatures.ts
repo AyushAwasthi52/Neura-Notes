@@ -1,14 +1,25 @@
-class APIFeatures {
+import { Query } from "mongoose";
+
+type QueryString = {
+  page?: string;
+  sort?: string;
+  limit?: string;
+  fields?: string;
+
+  [key: string]: unknown;
+};
+
+class APIFeatures<T> {
   constructor(
-    public query: any,
-    public queryString: any,
+    public query: Query<T[], T>,
+    public queryString: QueryString,
   ) {
     this.query = query;
     this.queryString = queryString;
   }
 
-  filter() {
-    const queryObj = { ...this.queryString };
+  filter(): this {
+    const queryObj: Record<string, unknown> = { ...this.queryString };
     const excludedFields = ["page", "sort", "limit", "fields"];
     excludedFields.forEach((el) => delete queryObj[el]);
 
@@ -19,9 +30,9 @@ class APIFeatures {
     return this;
   }
 
-  sort() {
+  sort(): this {
     if (this.queryString.sort) {
-      const sortBy = this.queryString.sort().split(",").join(" ");
+      const sortBy = this.queryString.sort.split(",").join(" ");
       this.query = this.query.sort(sortBy);
     } else {
       this.query = this.query.sort("-createdAt");
@@ -29,7 +40,7 @@ class APIFeatures {
     return this;
   }
 
-  limitFields() {
+  limitFields(): this {
     if (this.queryString.fields) {
       const fields = this.queryString.fields.split(",").join(" ");
       this.query = this.query.select(fields);
@@ -40,9 +51,9 @@ class APIFeatures {
     return this;
   }
 
-  pagination() {
-    const page = this.queryString.page || 1;
-    const limit = this.queryString.limit || 100;
+  pagination(): this {
+    const page = Number(this.queryString.page || 1);
+    const limit = Number(this.queryString.limit || 100);
     const skip = (page - 1) * limit;
 
     this.query = this.query.skip(skip).limit(limit);
