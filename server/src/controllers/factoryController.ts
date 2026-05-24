@@ -1,3 +1,4 @@
+import APIFeatures from "../utils/APIFeatures.js";
 import AppError from "../utils/appError.js";
 import catchAsync from "../utils/catchAsync.js";
 import { Request, Response, NextFunction } from "express";
@@ -56,6 +57,19 @@ const getOne: Function = (Model: any) => {
 
 const getAll: Function = (Model: any) => {
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    
-  })
-}
+    let filter = {};
+    const features = new APIFeatures(Model.find(), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .pagination();
+    const Models = await features.query;
+    res.status(200).json({
+      status: "Success",
+      results: Models.length,
+      data: {
+        Models,
+      },
+    });
+  });
+};
