@@ -1,10 +1,15 @@
 import APIFeatures from "../utils/APIFeatures.js";
 import AppError from "../utils/appError.js";
 import catchAsync from "../utils/catchAsync.js";
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction, RequestHandler } from "express";
+import { Model, Document} from "mongoose";
 
-const deleteOne: Function = (Model: any) => {
-  catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+type MongooseDoc = Document & {
+  createdAt?: Date;
+};
+
+const deleteOne = <T extends MongooseDoc>(Model: Model<T>,) : RequestHandler => {
+  return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const doc = await Model.findByIdAndDelete(req.params.id);
 
     if (!doc) {
@@ -18,8 +23,8 @@ const deleteOne: Function = (Model: any) => {
   });
 };
 
-const updateOne: Function = (Model: any) => {
-  catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+const updateOne = <T extends MongooseDoc>(Model: Model<T>,) : RequestHandler => {
+  return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
@@ -33,8 +38,8 @@ const updateOne: Function = (Model: any) => {
   });
 };
 
-const createOne: Function = (Model: any) => {
-  catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+const createOne = <T extends MongooseDoc>(Model: Model<T>,) : RequestHandler => {
+  return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const doc = await Model.create(req.body);
 
     res.status(204).json({
@@ -44,8 +49,8 @@ const createOne: Function = (Model: any) => {
   });
 };
 
-const getOne: Function = (Model: any) => {
-  catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+const getOne = <T extends MongooseDoc>(Model: Model<T>,) : RequestHandler => {
+  return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const doc = await Model.findById(req.params.id);
 
     res.status(204).json({
@@ -55,8 +60,8 @@ const getOne: Function = (Model: any) => {
   });
 };
 
-const getAll: Function = (Model: any) => {
-  catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+const getAll = <T extends MongooseDoc>(Model: Model<T>,) : RequestHandler => {
+  return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     let filter = {};
     const features = new APIFeatures(Model.find(), req.query)
       .filter()
