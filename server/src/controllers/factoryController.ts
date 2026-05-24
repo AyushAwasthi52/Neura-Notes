@@ -73,3 +73,5 @@ const getAll: Function = (Model: any) => {
     });
   });
 };
+
+export { deleteOne, updateOne, createOne, getOne, getAll };
